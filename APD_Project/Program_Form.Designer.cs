@@ -2292,7 +2292,7 @@
             // 
             // panel2
             // 
-            this.panel2.BackColor = System.Drawing.Color.Crimson;
+            this.panel2.BackColor = System.Drawing.Color.DarkMagenta;
             this.panel2.Controls.Add(this.label19);
             this.panel2.Controls.Add(this.button9);
             this.panel2.Controls.Add(this.button8);
