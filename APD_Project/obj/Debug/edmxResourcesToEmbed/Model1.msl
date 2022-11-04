@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="ComShopModelStoreContainer" CdmEntityContainer="ComShopEntities">
+    <EntitySetMapping Name="P_Bill">
+      <EntityTypeMapping TypeName="ComShopModel.P_Bill">
+        <MappingFragment StoreEntitySet="P_Bill">
+          <ScalarProperty Name="bill_id" ColumnName="bill_id" />
+          <ScalarProperty Name="member_id" ColumnName="member_id" />
+          <ScalarProperty Name="sum_price" ColumnName="sum_price" />
+          <ScalarProperty Name="date" ColumnName="date" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="P_Bill_items">
+      <EntityTypeMapping TypeName="ComShopModel.P_Bill_items">
+        <MappingFragment StoreEntitySet="P_Bill_items">
+          <ScalarProperty Name="item_id" ColumnName="item_id" />
+          <ScalarProperty Name="bill_id" ColumnName="bill_id" />
+          <ScalarProperty Name="product_id" ColumnName="product_id" />
+          <ScalarProperty Name="amount" ColumnName="amount" />
+          <ScalarProperty Name="sum_price" ColumnName="sum_price" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="P_Department">
+      <EntityTypeMapping TypeName="ComShopModel.P_Department">
+        <MappingFragment StoreEntitySet="P_Department">
+          <ScalarProperty Name="depart_id" ColumnName="depart_id" />
+          <ScalarProperty Name="department" ColumnName="department" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="P_Employee">
+      <EntityTypeMapping TypeName="ComShopModel.P_Employee">
+        <MappingFragment StoreEntitySet="P_Employee">
+          <ScalarProperty Name="emp_id" ColumnName="emp_id" />
+          <ScalarProperty Name="emp_name" ColumnName="emp_name" />
+          <ScalarProperty Name="emp_phone" ColumnName="emp_phone" />
+          <ScalarProperty Name="emp_username" ColumnName="emp_username" />
+          <ScalarProperty Name="emp_password" ColumnName="emp_password" />
+          <ScalarProperty Name="depart_id" ColumnName="depart_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="P_Member">
+      <EntityTypeMapping TypeName="ComShopModel.P_Member">
+        <MappingFragment StoreEntitySet="P_Member">
+          <ScalarProperty Name="mem_id" ColumnName="mem_id" />
+          <ScalarProperty Name="mem_name" ColumnName="mem_name" />
+          <ScalarProperty Name="mem_phone" ColumnName="mem_phone" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="P_Product">
+      <EntityTypeMapping TypeName="ComShopModel.P_Product">
+        <MappingFragment StoreEntitySet="P_Product">
+          <ScalarProperty Name="p_id" ColumnName="p_id" />
+          <ScalarProperty Name="p_name" ColumnName="p_name" />
+          <ScalarProperty Name="p_detail" ColumnName="p_detail" />
+          <ScalarProperty Name="p_image" ColumnName="p_image" />
+          <ScalarProperty Name="p_price" ColumnName="p_price" />
+          <ScalarProperty Name="p_amount" ColumnName="p_amount" />
+          <ScalarProperty Name="p_type" ColumnName="p_type" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="P_Promotion">
+      <EntityTypeMapping TypeName="ComShopModel.P_Promotion">
+        <MappingFragment StoreEntitySet="P_Promotion">
+          <ScalarProperty Name="pro_id" ColumnName="pro_id" />
+          <ScalarProperty Name="discount" ColumnName="discount" />
+          <ScalarProperty Name="product_id_1" ColumnName="product_id_1" />
+          <ScalarProperty Name="product_id_2" ColumnName="product_id_2" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

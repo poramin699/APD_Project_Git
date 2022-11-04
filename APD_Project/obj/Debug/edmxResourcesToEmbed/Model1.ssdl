@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ComShopModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="P_Bill">
+    <Key>
+      <PropertyRef Name="bill_id" />
+    </Key>
+    <Property Name="bill_id" Type="varchar" MaxLength="8" Nullable="false" />
+    <Property Name="member_id" Type="int" />
+    <Property Name="sum_price" Type="float" />
+    <Property Name="date" Type="datetime" />
+  </EntityType>
+  <EntityType Name="P_Bill_items">
+    <Key>
+      <PropertyRef Name="item_id" />
+    </Key>
+    <Property Name="item_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="bill_id" Type="varchar" MaxLength="8" />
+    <Property Name="product_id" Type="varchar" MaxLength="255" />
+    <Property Name="amount" Type="int" />
+    <Property Name="sum_price" Type="float" />
+  </EntityType>
+  <EntityType Name="P_Department">
+    <Key>
+      <PropertyRef Name="depart_id" />
+    </Key>
+    <Property Name="depart_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="department" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="P_Employee">
+    <Key>
+      <PropertyRef Name="emp_id" />
+    </Key>
+    <Property Name="emp_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="emp_name" Type="varchar" MaxLength="50" />
+    <Property Name="emp_phone" Type="varchar" MaxLength="10" />
+    <Property Name="emp_username" Type="varchar" MaxLength="255" />
+    <Property Name="emp_password" Type="varchar" MaxLength="255" />
+    <Property Name="depart_id" Type="int" />
+  </EntityType>
+  <EntityType Name="P_Member">
+    <Key>
+      <PropertyRef Name="mem_id" />
+    </Key>
+    <Property Name="mem_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="mem_name" Type="varchar" MaxLength="50" />
+    <Property Name="mem_phone" Type="varchar" MaxLength="10" />
+  </EntityType>
+  <EntityType Name="P_Product">
+    <Key>
+      <PropertyRef Name="p_id" />
+    </Key>
+    <Property Name="p_id" Type="varchar" MaxLength="255" Nullable="false" />
+    <Property Name="p_name" Type="text" />
+    <Property Name="p_detail" Type="text" />
+    <Property Name="p_image" Type="text" />
+    <Property Name="p_price" Type="float" />
+    <Property Name="p_amount" Type="int" />
+    <Property Name="p_type" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="P_Promotion">
+    <Key>
+      <PropertyRef Name="pro_id" />
+    </Key>
+    <Property Name="pro_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="discount" Type="float" />
+    <Property Name="product_id_1" Type="varchar" MaxLength="255" />
+    <Property Name="product_id_2" Type="varchar" MaxLength="255" />
+  </EntityType>
+  <Association Name="FK_P_Bill_items_P_Bill">
+    <End Role="P_Bill" Type="Self.P_Bill" Multiplicity="0..1" />
+    <End Role="P_Bill_items" Type="Self.P_Bill_items" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="P_Bill">
+        <PropertyRef Name="bill_id" />
+      </Principal>
+      <Dependent Role="P_Bill_items">
+        <PropertyRef Name="bill_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_P_Bill_items_P_Product">
+    <End Role="P_Product" Type="Self.P_Product" Multiplicity="0..1" />
+    <End Role="P_Bill_items" Type="Self.P_Bill_items" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="P_Product">
+        <PropertyRef Name="p_id" />
+      </Principal>
+      <Dependent Role="P_Bill_items">
+        <PropertyRef Name="product_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_P_Bill_P_Member">
+    <End Role="P_Member" Type="Self.P_Member" Multiplicity="0..1" />
+    <End Role="P_Bill" Type="Self.P_Bill" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="P_Member">
+        <PropertyRef Name="mem_id" />
+      </Principal>
+      <Dependent Role="P_Bill">
+        <PropertyRef Name="member_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_P_Employee_P_Department">
+    <End Role="P_Department" Type="Self.P_Department" Multiplicity="0..1" />
+    <End Role="P_Employee" Type="Self.P_Employee" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="P_Department">
+        <PropertyRef Name="depart_id" />
+      </Principal>
+      <Dependent Role="P_Employee">
+        <PropertyRef Name="depart_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_P_Promotion_P_Product">
+    <End Role="P_Product" Type="Self.P_Product" Multiplicity="0..1" />
+    <End Role="P_Promotion" Type="Self.P_Promotion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="P_Product">
+        <PropertyRef Name="p_id" />
+      </Principal>
+      <Dependent Role="P_Promotion">
+        <PropertyRef Name="product_id_1" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_P_Promotion_P_Product1">
+    <End Role="P_Product" Type="Self.P_Product" Multiplicity="0..1" />
+    <End Role="P_Promotion" Type="Self.P_Promotion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="P_Product">
+        <PropertyRef Name="p_id" />
+      </Principal>
+      <Dependent Role="P_Promotion">
+        <PropertyRef Name="product_id_2" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="ComShopModelStoreContainer">
+    <EntitySet Name="P_Bill" EntityType="Self.P_Bill" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="P_Bill_items" EntityType="Self.P_Bill_items" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="P_Department" EntityType="Self.P_Department" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="P_Employee" EntityType="Self.P_Employee" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="P_Member" EntityType="Self.P_Member" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="P_Product" EntityType="Self.P_Product" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="P_Promotion" EntityType="Self.P_Promotion" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_P_Bill_items_P_Bill" Association="Self.FK_P_Bill_items_P_Bill">
+      <End Role="P_Bill" EntitySet="P_Bill" />
+      <End Role="P_Bill_items" EntitySet="P_Bill_items" />
+    </AssociationSet>
+    <AssociationSet Name="FK_P_Bill_items_P_Product" Association="Self.FK_P_Bill_items_P_Product">
+      <End Role="P_Product" EntitySet="P_Product" />
+      <End Role="P_Bill_items" EntitySet="P_Bill_items" />
+    </AssociationSet>
+    <AssociationSet Name="FK_P_Bill_P_Member" Association="Self.FK_P_Bill_P_Member">
+      <End Role="P_Member" EntitySet="P_Member" />
+      <End Role="P_Bill" EntitySet="P_Bill" />
+    </AssociationSet>
+    <AssociationSet Name="FK_P_Employee_P_Department" Association="Self.FK_P_Employee_P_Department">
+      <End Role="P_Department" EntitySet="P_Department" />
+      <End Role="P_Employee" EntitySet="P_Employee" />
+    </AssociationSet>
+    <AssociationSet Name="FK_P_Promotion_P_Product" Association="Self.FK_P_Promotion_P_Product">
+      <End Role="P_Product" EntitySet="P_Product" />
+      <End Role="P_Promotion" EntitySet="P_Promotion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_P_Promotion_P_Product1" Association="Self.FK_P_Promotion_P_Product1">
+      <End Role="P_Product" EntitySet="P_Product" />
+      <End Role="P_Promotion" EntitySet="P_Promotion" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

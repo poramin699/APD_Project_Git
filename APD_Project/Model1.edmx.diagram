@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="07a436008559488f9a2e840b7806e574" Name="Diagram1">
+        <EntityTypeShape EntityType="ComShopModel.P_Bill" Width="1.5" PointX="0.75" PointY="7.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ComShopModel.P_Bill_items" Width="1.5" PointX="3" PointY="2.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ComShopModel.P_Department" Width="1.5" PointX="5.75" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ComShopModel.P_Employee" Width="1.5" PointX="8" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="ComShopModel.P_Member" Width="1.5" PointX="1.5" PointY="10.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ComShopModel.P_Product" Width="1.5" PointX="0.75" PointY="2.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ComShopModel.P_Promotion" Width="1.5" PointX="3" PointY="5.75" IsExpanded="true" />
+        <AssociationConnector Association="ComShopModel.FK_P_Bill_items_P_Bill" ManuallyRouted="false" />
+        <AssociationConnector Association="ComShopModel.FK_P_Bill_P_Member" ManuallyRouted="false" />
+        <AssociationConnector Association="ComShopModel.FK_P_Bill_items_P_Product" ManuallyRouted="false" />
+        <AssociationConnector Association="ComShopModel.FK_P_Employee_P_Department" ManuallyRouted="false" />
+        <AssociationConnector Association="ComShopModel.FK_P_Promotion_P_Product" ManuallyRouted="false" />
+        <AssociationConnector Association="ComShopModel.FK_P_Promotion_P_Product1" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
