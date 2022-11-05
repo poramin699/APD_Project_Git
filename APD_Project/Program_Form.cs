@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
+using System.Data.Entity.Infrastructure;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -17,6 +18,7 @@ using System.Xml;
 using System.Xml.Linq;
 using ZXing;
 using ZXing.QrCode;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace APD_Project
 {
@@ -34,40 +36,40 @@ namespace APD_Project
             this.Text = "CompShop ผู้ใช้ : " + username + " ประเภท : " + depart;
             label19.Text = "ผู้ใช้ : " + username + " ประเภท : " + depart;
 
-            if(depart == "เจ้าของร้าน")
-            {
-                Tab_Panel.Controls.Remove(promotion_page);
-                Tab_Panel.Controls.Remove(Cart_Page);
-                DisableCRUD_Product();
+            //if(depart == "เจ้าของร้าน")
+            //{
+            //    Tab_Panel.Controls.Remove(promotion_page);
+            //    Tab_Panel.Controls.Remove(Cart_Page);
+            //    DisableCRUD_Product();
 
-                label25.Visible = false;
-                groupBox8.Visible = false;
-                groupBox6.Location = new Point(268, 377);
-                groupBox6.Anchor = AnchorStyles.Bottom;
+            //    label25.Visible = false;
+            //    groupBox8.Visible = false;
+            //    groupBox6.Location = new Point(268, 377);
+            //    groupBox6.Anchor = AnchorStyles.Bottom;
 
-            }
-            else if(depart == "พนักงานคลังสินค้า")
-            {
-                AddProductToDB addProductToDB = new AddProductToDB();
-                Tab_Panel.Controls.Remove(EmpData_Page);
-                Tab_Panel.Controls.Remove(Customer_page);
-                Tab_Panel.Controls.Remove(Cart_Page);
-                label25.Visible = false;
-                groupBox8.Visible = false;
+            //}
+            //else if(depart == "พนักงานคลังสินค้า")
+            //{
+            //    AddProductToDB addProductToDB = new AddProductToDB();
+            //    Tab_Panel.Controls.Remove(EmpData_Page);
+            //    Tab_Panel.Controls.Remove(Customer_page);
+            //    Tab_Panel.Controls.Remove(Cart_Page);
+            //    label25.Visible = false;
+            //    groupBox8.Visible = false;
                 button26.Visible = true;
                 textBox15.Visible = true;
-                groupBox6.Anchor = AnchorStyles.Bottom;
+            //    groupBox6.Anchor = AnchorStyles.Bottom;
                 groupBox17.Visible = true;
 
-                //addProductToDB.Location = new Point(500, 376);
-                product_page.Controls.Add(addProductToDB);
-            }
-            else if(depart == "พนักงานขายหน้าร้าน")
-            {
+            //    //addProductToDB.Location = new Point(500, 376);
+            //    product_page.Controls.Add(addProductToDB);
+            //}
+            //else if(depart == "พนักงานขายหน้าร้าน")
+            //{
                 groupBox16.Visible = true;
-                Tab_Panel.Controls.Remove(EmpData_Page);
-                DisableCRUD_Product();
-            }
+            //    Tab_Panel.Controls.Remove(EmpData_Page);
+            //    DisableCRUD_Product();
+            //}
 
             webcams = new FilterInfoCollection(FilterCategory.VideoInputDevice);
             foreach (FilterInfo info in webcams)
@@ -102,7 +104,19 @@ namespace APD_Project
                 .Select(s => new { s.emp_id, s.emp_name, s.emp_phone, s.emp_username, s.emp_password, s.P_Department.department }).ToList();
 
             pMemberBindingSource.DataSource = _context.P_Member.ToList();
-            pPromotionBindingSource.DataSource = _context.P_Promotion.Select(s => new { s.pro_id, s.discount, s.product_id_1, s.product_id_2, p1 = s.P_Product.p_name, p2 = s.P_Product1.p_name }).ToList();
+            pPromotionBindingSource.DataSource = _context.P_Promotion.Select
+                (s => new { 
+                    s.pro_id, 
+                    s.discount, 
+                    s.product_id_1, 
+                    s.product_id_2, 
+                    p1 = s.P_Product.p_name, 
+                    p2 = s.P_Product1.p_name , 
+                    p1price = s.P_Product.p_price, 
+                    p2price = s.P_Product1.p_price,
+                    img1 = s.P_Product.p_image,
+                    img2 = s.P_Product1.p_image
+                }).ToList();
 
             var Product_List = _context.P_Product.ToList();
             pProductBindingSource.DataSource = Product_List;
@@ -215,6 +229,16 @@ namespace APD_Project
 
         private void button2_Click(object sender, EventArgs e)
         {
+            if(
+                textBox2.Text == "" ||
+                textBox4.Text == "" ||
+                textBox5.Text == "" ||
+                textBox3.Text == ""
+              )
+            {
+                MessageBox.Show("โปรดกรอกข้อมูลให้ครบ");
+                return;
+            }
             int empid = int.Parse(textBox1.Text);
             var emp = _context.P_Employee.SingleOrDefault(s => s.emp_id == empid);
             if(emp != null)
@@ -238,7 +262,15 @@ namespace APD_Project
 
         private void button5_Click(object sender, EventArgs e)
         {
-            int memid = int.Parse(textBox10.Text);
+            if (
+                textBox9.Text == "" ||
+                textBox7.Text == ""
+              )
+            {
+                MessageBox.Show("โปรดกรอกข้อมูลให้ครบ");
+                return;
+            }
+                int memid = int.Parse(textBox10.Text);
             var mem = _context.P_Member.SingleOrDefault(s => s.mem_id == memid);
             if(mem != null)
             {
@@ -280,7 +312,7 @@ namespace APD_Project
             }
             else
             {
-                pProductBindingSource.DataSource = product;
+                pProductBindingSource.DataSource = product.Where(s => s.p_id.ToString().Contains(search) || s.p_name.Contains(search) || s.p_detail.Contains(search)).ToList();
             }
         }
 
@@ -456,6 +488,7 @@ namespace APD_Project
             label21.Text = "0";
             label23.Text = "0.00";
             label37.Text = "";
+            textBox27.Text = "";
             pictureBox3.Image = null;
         }
 
@@ -475,7 +508,21 @@ namespace APD_Project
             string phone = textBox24.Text;
             string username = textBox20.Text;
             string password = textBox21.Text;
-            int depart = int.Parse((comboBox4.SelectedItem as ComboBoxItem).GetValue());
+            int depart = -1;
+
+            if (
+                name == "" ||
+                phone == "" ||
+                username == "" ||
+                password == "" ||
+                comboBox4.SelectedItem == null
+            )
+            {
+                MessageBox.Show("โปรกรอกข้อมูลให้ครบ");
+                return;
+            }
+            depart = int.Parse((comboBox4.SelectedItem as ComboBoxItem).GetValue());
+
 
             P_Employee employee = new P_Employee {
                 emp_name = name,
@@ -530,6 +577,11 @@ namespace APD_Project
 
         private void button17_Click(object sender, EventArgs e)
         {
+            if(textBox25.Text == "" || textBox22.Text == "")
+            {
+                MessageBox.Show("โปรกรอกข้อมูลให้ครบ");
+                return; 
+            }
             string name = textBox25.Text;
             string phone = textBox22.Text;
             P_Member member = new P_Member
@@ -575,8 +627,17 @@ namespace APD_Project
             {
                 var product = _context.P_Product.SingleOrDefault(p => p.p_id == pID);
                 _context.P_Product.Remove(product);
-                _context.SaveChanges();
-
+                try
+                {
+                    _context.SaveChanges();
+                }
+                catch (DbUpdateException)
+                {
+                    MessageBox.Show("ไม่สามารถลบสินค้านี้ได้");
+                    _context = new ComShopEntities();
+                    return;
+                }
+                _context = new ComShopEntities();
                 var Product_List = _context.P_Product.ToList();
                 pProductBindingSource.DataSource = Product_List;
 
@@ -585,6 +646,18 @@ namespace APD_Project
 
         private void button20_Click(object sender, EventArgs e)
         {
+            if(
+                textBox12.Text == "" ||
+                textBox11.Text == "" ||
+                comboBox6.Text == "" ||
+                textBox14.Text == "" ||
+                textBox26.Text == "" ||
+                textBox8.Text == ""
+              )
+            {
+                MessageBox.Show("โปรดกรอกข้อมูลให้ครบ");
+                return;
+            }
             string id = textBox12.Text;
             string name = textBox11.Text;
             string type = comboBox6.Text;
@@ -634,17 +707,28 @@ namespace APD_Project
 
         private void button24_Click(object sender, EventArgs e)
         {
-            if (videoIn != null && videoIn.IsRunning)
+            try
             {
-                timer1.Enabled = false;
-                videoSourcePlayer1.Stop();
+                if (videoIn != null && videoIn.IsRunning)
+                {
+                    timer1.Enabled = false;
+                    videoSourcePlayer1.Stop();
+                    button24.BackColor = Color.SeaGreen;
+                    button24.Text = "เปิด";
+                }
+                else
+                {
+                    videoIn = new VideoCaptureDevice(webcams[comboBox5.SelectedIndex].MonikerString);
+                    videoSourcePlayer1.VideoSource = videoIn;
+                    videoSourcePlayer1.Start();
+                    timer1.Enabled = true;
+                    button24.BackColor = Color.Crimson;
+                    button24.Text = "ปิด";
+                }
             }
-            else
+            catch (Exception)
             {
-                videoIn = new VideoCaptureDevice(webcams[comboBox5.SelectedIndex].MonikerString);
-                videoSourcePlayer1.VideoSource = videoIn;
-                videoSourcePlayer1.Start();
-                timer1.Enabled = true;
+                MessageBox.Show("โปรดเลือกกล้อง");
             }
         }
 
@@ -667,6 +751,9 @@ namespace APD_Project
                 var result = reader.Decode(capture);
                 if (result != null)
                 {
+                    var Product_List = _context.P_Product.ToList();
+                    pProductBindingSource.DataSource = Product_List;
+
                     bool found = false;
                     foreach(DataGridViewRow row in dataGridView3.Rows)
                     {
@@ -694,6 +781,12 @@ namespace APD_Project
 
         private void button12_Click(object sender, EventArgs e)
         {
+
+            if (listView1.Items.Count <= 0)
+            {
+                MessageBox.Show("ไม่มีสินค้าในตะกร้าสินค้า");
+                return;
+            }
             DateTime date = DateTime.Now;
             string toID = date.ToString("ddHHmmss");
 
@@ -787,29 +880,45 @@ namespace APD_Project
 
         private void button26_Click(object sender, EventArgs e)
         {
-            string id;
-            string name;
-            string detail;
-            double price;
-            string image;
-            string type;
-
+            if(textBox15.Text == "")
+            {
+                MessageBox.Show("โปรกรอกรหัสินค้า");
+                return;
+            }
+            string id = "";
+            string name = "";
+            string detail = "";
+            double price = 0;
+            string image = "";
+            string type = "";
             string url = "https://www.jib.co.th/web/product/readProduct/" + textBox15.Text;
-            id = textBox15.Text;
+            HtmlAgilityPack.HtmlDocument doc = null;
 
-            HtmlWeb web = new HtmlWeb();
-            HtmlAgilityPack.HtmlDocument doc = web.Load(url);
-            HtmlNode titleNode = doc.DocumentNode.SelectSingleNode("//meta[@property=\"og:title\"]");
-            name = titleNode.Attributes["content"].Value;
-            //MessageBox.Show(name);
-            HtmlNode descriptionNode = doc.DocumentNode.SelectSingleNode("//meta[@property=\"og:description\"]");
-            detail = descriptionNode.Attributes["content"].Value;
-            //MessageBox.Show(detail);
-            HtmlNode imageNode = doc.DocumentNode.SelectSingleNode("//meta[@property=\"og:image\"]");
-            image = imageNode.Attributes["content"].Value;
-            //MessageBox.Show(image);
-            HtmlNode typeNode = doc.DocumentNode.SelectSingleNode("//*[@id=\"product_wrap\"]/div[1]/a[3]");
-            type = typeNode.Attributes["title"].Value;
+            try
+            {
+                id = textBox15.Text;
+                HtmlWeb web = new HtmlWeb();
+                doc = web.Load(url);
+                HtmlNode titleNode = doc.DocumentNode.SelectSingleNode("//meta[@property=\"og:title\"]");
+                name = titleNode.Attributes["content"].Value;
+                //MessageBox.Show(name);
+                HtmlNode descriptionNode = doc.DocumentNode.SelectSingleNode("//meta[@property=\"og:description\"]");
+                detail = descriptionNode.Attributes["content"].Value;
+                //MessageBox.Show(detail);
+                HtmlNode imageNode = doc.DocumentNode.SelectSingleNode("//meta[@property=\"og:image\"]");
+                image = imageNode.Attributes["content"].Value;
+                //MessageBox.Show(image);
+                HtmlNode typeNode = doc.DocumentNode.SelectSingleNode("//*[@id=\"product_wrap\"]/div[1]/a[3]");
+                //type = typeNode.Attributes["title"].Value;
+                type = typeNode.Attributes["title"].Value;
+            }
+            catch (NullReferenceException)
+            {
+                MessageBox.Show("ไม่พบสินค้า");
+                _context = new ComShopEntities();
+                return;
+            }
+        
             //MessageBox.Show(type);
             HtmlNode priceNode = doc.DocumentNode.SelectSingleNode("//div[@class=\"col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center price_block\"]");
             string strprice = priceNode.InnerText;
@@ -827,8 +936,66 @@ namespace APD_Project
             };
 
             _context.P_Product.Add(product);
-            var r = _context.SaveChanges();
+            try
+            {
+                var r = _context.SaveChanges();
+            }
+            catch (DbUpdateException)
+            {
+                MessageBox.Show("มีสินค้านี้ในระบบแล้ว");
+                textBox15.Text = "";
+                return;
+            }
             MessageBox.Show(product.p_id+" -> "+product.p_name);
+            textBox15.Text = "";
+        }
+
+        private void textBox7_Validated(object sender, EventArgs e)
+        {
+ 
+        }
+
+        private void dataGridView4_SelectionChanged(object sender, EventArgs e)
+        {
+            if(dataGridView4.SelectedRows.Count > 0)
+            {
+                textBox33.Text = dataGridView4.SelectedRows[0].Cells[2].Value.ToString();
+                textBox34.Text = dataGridView4.SelectedRows[0].Cells[3].Value.ToString();
+                textBox37.Text = dataGridView4.SelectedRows[0].Cells[4].Value.ToString();
+
+                textBox32.Text = dataGridView4.SelectedRows[0].Cells[5].Value.ToString();
+                textBox35.Text = dataGridView4.SelectedRows[0].Cells[6].Value.ToString();
+                textBox38.Text = dataGridView4.SelectedRows[0].Cells[7].Value.ToString();
+
+                textBox31.Text = dataGridView4.SelectedRows[0].Cells[1].Value.ToString();
+
+                pictureBox4.Image = ImageLoad.LoadImage(dataGridView4.SelectedRows[0].Cells[8].Value.ToString());
+                pictureBox5.Image = ImageLoad.LoadImage(dataGridView4.SelectedRows[0].Cells[9].Value.ToString());
+            }
+        }
+
+        private void button27_Click(object sender, EventArgs e)
+        {
+            if( textBox19.Text == "" ||
+                textBox28.Text == "" ||
+                textBox30.Text == ""
+              )
+            {
+                MessageBox.Show("โปรดกรอกข้อมูลให้ครบ");
+                return;
+            }
+        }
+
+        private void button28_Click(object sender, EventArgs e)
+        {
+            if (textBox33.Text == "" ||
+                textBox32.Text == "" ||
+                textBox31.Text == ""
+              )
+            {
+                MessageBox.Show("โปรดกรอกข้อมูลให้ครบ");
+                return;
+            }
         }
     }
 }
