@@ -17,8 +17,8 @@ namespace APD_Project
         public int item_id { get; set; }
         public string bill_id { get; set; }
         public string product_id { get; set; }
-        public Nullable<int> amount { get; set; }
-        public Nullable<double> sum_price { get; set; }
+        public int amount { get; set; }
+        public double sum_price { get; set; }
     
         public virtual P_Bill P_Bill { get; set; }
         public virtual P_Product P_Product { get; set; }

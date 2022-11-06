@@ -26,8 +26,8 @@ namespace APD_Project
         public string p_name { get; set; }
         public string p_detail { get; set; }
         public string p_image { get; set; }
-        public Nullable<double> p_price { get; set; }
-        public Nullable<int> p_amount { get; set; }
+        public double p_price { get; set; }
+        public int p_amount { get; set; }
         public string p_type { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

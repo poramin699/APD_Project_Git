@@ -1,12 +1,14 @@
 ﻿using AForge.Video.DirectShow;
 using HtmlAgilityPack;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Data.Entity.Infrastructure;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -36,40 +38,43 @@ namespace APD_Project
             this.Text = "CompShop ผู้ใช้ : " + username + " ประเภท : " + depart;
             label19.Text = "ผู้ใช้ : " + username + " ประเภท : " + depart;
 
-            //if(depart == "เจ้าของร้าน")
-            //{
-            //    Tab_Panel.Controls.Remove(promotion_page);
-            //    Tab_Panel.Controls.Remove(Cart_Page);
-            //    DisableCRUD_Product();
+            if (depart == "เจ้าของร้าน")
+            {
+                Tab_Panel.Controls.Remove(promotion_page);
+                Tab_Panel.Controls.Remove(Cart_Page);
+                DisableCRUD_Product();
 
-            //    label25.Visible = false;
-            //    groupBox8.Visible = false;
-            //    groupBox6.Location = new Point(268, 377);
-            //    groupBox6.Anchor = AnchorStyles.Bottom;
+                label25.Visible = false;
+                groupBox8.Visible = false;
+                groupBox6.Location = new Point(268, 377);
+                groupBox6.Anchor = AnchorStyles.Bottom;
 
-            //}
-            //else if(depart == "พนักงานคลังสินค้า")
-            //{
-            //    AddProductToDB addProductToDB = new AddProductToDB();
-            //    Tab_Panel.Controls.Remove(EmpData_Page);
-            //    Tab_Panel.Controls.Remove(Customer_page);
-            //    Tab_Panel.Controls.Remove(Cart_Page);
-            //    label25.Visible = false;
-            //    groupBox8.Visible = false;
+            }
+            else if (depart == "พนักงานคลังสินค้า")
+            {
+                AddProductToDB addProductToDB = new AddProductToDB();
+                Tab_Panel.Controls.Remove(EmpData_Page);
+                Tab_Panel.Controls.Remove(Customer_page);
+                Tab_Panel.Controls.Remove(Cart_Page);
+                Tab_Panel.Controls.Remove(Order_Page);
+                label25.Visible = false;
+                groupBox8.Visible = false;
                 button26.Visible = true;
                 textBox15.Visible = true;
-            //    groupBox6.Anchor = AnchorStyles.Bottom;
+                groupBox6.Anchor = AnchorStyles.Bottom;
                 groupBox17.Visible = true;
 
-            //    //addProductToDB.Location = new Point(500, 376);
-            //    product_page.Controls.Add(addProductToDB);
-            //}
-            //else if(depart == "พนักงานขายหน้าร้าน")
-            //{
+
+                addProductToDB.Location = new Point(500, 376);
+                product_page.Controls.Add(addProductToDB);
+            }
+            else if (depart == "พนักงานขายหน้าร้าน")
+            {
+                button33.Visible = false;
                 groupBox16.Visible = true;
-            //    Tab_Panel.Controls.Remove(EmpData_Page);
-            //    DisableCRUD_Product();
-            //}
+                Tab_Panel.Controls.Remove(EmpData_Page);
+                DisableCRUD_Product();
+            }
 
             webcams = new FilterInfoCollection(FilterCategory.VideoInputDevice);
             foreach (FilterInfo info in webcams)
@@ -95,51 +100,109 @@ namespace APD_Project
             textBox26.BackColor = Color.White;
             textBox8.BackColor = Color.White;
         }
-        
-        
+
+
 
         private void Owner_Form_Load(object sender, EventArgs e)
         {
-            pEmployeeBindingSource.DataSource = _context.P_Employee
-                .Select(s => new { s.emp_id, s.emp_name, s.emp_phone, s.emp_username, s.emp_password, s.P_Department.department }).ToList();
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+            GetBill();
+            GetEmployee();
+            GetMember();
+            GetPromotion();
+            GetProductAndProductType();
+            GetDepartment();
 
-            pMemberBindingSource.DataSource = _context.P_Member.ToList();
-            pPromotionBindingSource.DataSource = _context.P_Promotion.Select
-                (s => new { 
-                    s.pro_id, 
-                    s.discount, 
-                    s.product_id_1, 
-                    s.product_id_2, 
-                    p1 = s.P_Product.p_name, 
-                    p2 = s.P_Product1.p_name , 
-                    p1price = s.P_Product.p_price, 
-                    p2price = s.P_Product1.p_price,
-                    img1 = s.P_Product.p_image,
-                    img2 = s.P_Product1.p_image
-                }).ToList();
+            comboBox8.ResetText();
+            comboBox9.ResetText();
+            comboBox10.ResetText();
+            comboBox8.SelectedIndex = -1;
+            comboBox9.SelectedIndex = -1;
+            comboBox10.SelectedIndex = -1;
+            comboBox9.Enabled = false;
+            comboBox8.Enabled = false;
+            comboBox10.Enabled = false;
+            dateTimePicker1.Enabled = false;
+            dateTimePicker2.Enabled = false;
+        }
 
-            var Product_List = _context.P_Product.ToList();
-            pProductBindingSource.DataSource = Product_List;
-
-            
+        private void GetDepartment()
+        {
             var Department = _context.P_Department.ToList();
             pDepartmentBindingSource.DataSource = Department;
 
+
+            ComboBoxItem comboBoxItem3 = new ComboBoxItem
+            {
+                Value = 0,
+                Text = "ทั้งหมด"
+            };
+            comboBox3.Items.Add(comboBoxItem3);
+            comboBox3.SelectedIndex = 0;
+            foreach (var depart in Department)
+            {
+                ComboBoxItem comboBoxItem = new ComboBoxItem
+                {
+                    Value = depart.depart_id,
+                    Text = depart.department
+                };
+                comboBox4.Items.Add(comboBoxItem);
+                comboBox3.Items.Add(comboBoxItem);
+
+            }
+        }
+
+        private void GetProductAndProductType()
+        {
+            var Product_List = _context.P_Product.ToList();
+            pProductBindingSource.DataSource = Product_List;
             var productType = Product_List.Select(x => x.p_type).Distinct().ToArray();
             comboBox2.Items.Add("ทั้งหมด");
             comboBox2.SelectedItem = "ทั้งหมด";
             comboBox2.Items.AddRange(productType);
             comboBox6.Items.AddRange(productType);
             comboBox7.Items.AddRange(productType);
-            
-            foreach (var depart in Department)
-            {
-                ComboBoxItem comboBoxItem = new ComboBoxItem { 
-                    Value = depart.depart_id,
-                    Text = depart.department
-                };
-                comboBox4.Items.Add(comboBoxItem);
-            }
+        }
+
+        private void GetMember()
+        {
+            pMemberBindingSource.DataSource = _context.P_Member.ToList();
+        }
+
+        private void GetEmployee()
+        {
+            pEmployeeBindingSource.DataSource = _context.P_Employee
+                .Select(s => new { s.emp_id, s.emp_name, s.emp_phone, s.emp_username, s.emp_password, s.P_Department.department }).ToList();
+        }
+
+        private void GetBill()
+        {
+            pBillBindingSource.DataSource = _context.P_Bill
+                .Select(b => new {
+                    b.member_id,
+                    b.bill_id,
+                    b.date,
+                    b.sum_price,
+                    memName = b.P_Member.mem_name,
+                    memPhone = b.P_Member.mem_phone })
+                .OrderByDescending(b => b.date).ToList();
+        }
+
+        private void GetPromotion()
+        {
+            pPromotionBindingSource.DataSource = _context.P_Promotion.Select
+                (s => new {
+                    s.pro_id,
+                    s.discount,
+                    s.product_id_1,
+                    s.product_id_2,
+                    p1 = s.P_Product.p_name,
+                    p2 = s.P_Product1.p_name,
+                    p1price = s.P_Product.p_price,
+                    p2price = s.P_Product1.p_price,
+                    img1 = s.P_Product.p_image,
+                    img2 = s.P_Product1.p_image
+                }).ToList();
         }
 
         private void ออกจากระบบToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -150,38 +213,57 @@ namespace APD_Project
 
         private void Owner_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
-            
-            
+
+
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            var emp = new List<P_Employee>();
+            if (comboBox3.Text == "ทั้งหมด")
+            {
+                emp = _context.P_Employee.ToList();
+            }
+            else
+            {
+                int depart = int.Parse((comboBox3.SelectedItem as ComboBoxItem).GetValue());
+                emp = _context.P_Employee.Where(s => s.depart_id == depart).ToList();
+            }
+
             if (radioAll.Checked)
             {
-                pEmployeeBindingSource.DataSource = _context.P_Employee
+                pEmployeeBindingSource.DataSource = emp
                     .Where(s => s.emp_id.ToString() == tbx_Search.Text || s.emp_name.Contains(tbx_Search.Text) ||
                     s.emp_username.Contains(tbx_Search.Text) || s.emp_phone.Contains(tbx_Search.Text)).ToList();
             }
             else if (radioTel.Checked)
             {
-                pEmployeeBindingSource.DataSource = _context.P_Employee.Where(s => s.emp_phone.Contains(tbx_Search.Text)).ToList();
+                pEmployeeBindingSource.DataSource = emp.Where(s => s.emp_phone.Contains(tbx_Search.Text))
+                    .Select(s => new { s.emp_id, s.emp_name, s.emp_phone, s.emp_username, s.emp_password, s.P_Department.department })
+                    .ToList();
             }
             else if (radioUsername.Checked)
             {
-                pEmployeeBindingSource.DataSource = _context.P_Employee.Where(s => s.emp_username.Contains(tbx_Search.Text)).ToList();
+                pEmployeeBindingSource.DataSource = emp.Where(s => s.emp_username.Contains(tbx_Search.Text))
+                    .Select(s => new { s.emp_id, s.emp_name, s.emp_phone, s.emp_username, s.emp_password, s.P_Department.department })
+                    .ToList();
             }
             else if (radioName.Checked)
             {
-                pEmployeeBindingSource.DataSource = _context.P_Employee.Where(s => s.emp_name.Contains(tbx_Search.Text)).ToList();
+                pEmployeeBindingSource.DataSource = emp.Where(s => s.emp_name.Contains(tbx_Search.Text))
+                    .Select(s => new { s.emp_id, s.emp_name, s.emp_phone, s.emp_username, s.emp_password, s.P_Department.department })
+                    .ToList();
             }
             else
             {
-                pEmployeeBindingSource.DataSource = _context.P_Employee.Where(s => s.emp_id.ToString().Contains(tbx_Search.Text)).ToList();
+                pEmployeeBindingSource.DataSource = emp.Where(s => s.emp_id.ToString().Contains(tbx_Search.Text))
+                    .Select(s => new { s.emp_id, s.emp_name, s.emp_phone, s.emp_username, s.emp_password, s.P_Department.department })
+                    .ToList();
             }
 
             if (tbx_Search.Text == "")
             {
-                pEmployeeBindingSource.DataSource = _context.P_Employee
+                pEmployeeBindingSource.DataSource = emp
                 .Select(s => new { s.emp_id, s.emp_name, s.emp_phone, s.emp_username, s.emp_password, s.P_Department.department }).ToList();
             }
         }
@@ -214,7 +296,7 @@ namespace APD_Project
 
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
-            if(dataGridView1.SelectedRows.Count > 0)
+            if (dataGridView1.SelectedRows.Count > 0)
             {
                 textBox1.Text = dataGridView1.SelectedRows[0].Cells[0].Value.ToString();
                 textBox2.Text = dataGridView1.SelectedRows[0].Cells[1].Value.ToString();
@@ -225,11 +307,11 @@ namespace APD_Project
             }
         }
 
-        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e){}
+        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e) { }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if(
+            if (
                 textBox2.Text == "" ||
                 textBox4.Text == "" ||
                 textBox5.Text == "" ||
@@ -241,7 +323,7 @@ namespace APD_Project
             }
             int empid = int.Parse(textBox1.Text);
             var emp = _context.P_Employee.SingleOrDefault(s => s.emp_id == empid);
-            if(emp != null)
+            if (emp != null)
             {
                 emp.emp_name = textBox2.Text;
                 emp.emp_phone = textBox4.Text;
@@ -255,10 +337,10 @@ namespace APD_Project
                 pEmployeeBindingSource.DataSource = _context.P_Employee
                 .Select(s => new { s.emp_id, s.emp_name, s.emp_phone, s.emp_username, s.emp_password, s.P_Department.department }).ToList();
             }
-            
+
         }
 
-        private void dataGridView2_CellClick(object sender, DataGridViewCellEventArgs e){}
+        private void dataGridView2_CellClick(object sender, DataGridViewCellEventArgs e) { }
 
         private void button5_Click(object sender, EventArgs e)
         {
@@ -270,9 +352,9 @@ namespace APD_Project
                 MessageBox.Show("โปรดกรอกข้อมูลให้ครบ");
                 return;
             }
-                int memid = int.Parse(textBox10.Text);
+            int memid = int.Parse(textBox10.Text);
             var mem = _context.P_Member.SingleOrDefault(s => s.mem_id == memid);
-            if(mem != null)
+            if (mem != null)
             {
                 mem.mem_name = textBox9.Text;
                 mem.mem_phone = textBox7.Text;
@@ -288,15 +370,15 @@ namespace APD_Project
             var product = new List<P_Product>();
             string search = textBox6.Text;
 
-            if (comboBox2.Text == "ทั้งหมด") 
-            { 
+            if (comboBox2.Text == "ทั้งหมด")
+            {
                 product = _context.P_Product.ToList();
             }
             else
             {
                 product = _context.P_Product.Where(s => s.p_type == comboBox2.Text).ToList();
             }
-            
+
 
             if (radioButton2.Checked)
             {
@@ -342,7 +424,7 @@ namespace APD_Project
 
         private void button8_Click(object sender, EventArgs e)
         {
-            if(this.WindowState != FormWindowState.Maximized)
+            if (this.WindowState != FormWindowState.Maximized)
             {
                 this.WindowState = FormWindowState.Maximized;
             }
@@ -359,7 +441,7 @@ namespace APD_Project
 
         private void Owner_Form_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (MessageBox.Show("ออกจากระบบหรือไม่ ?", "ออกจากระบบ", MessageBoxButtons.YesNo,MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show("ออกจากระบบหรือไม่ ?", "ออกจากระบบ", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 this.ParentForm.Show();
             }
@@ -371,7 +453,7 @@ namespace APD_Project
 
         private void dataGridView3_SelectionChanged(object sender, EventArgs e)
         {
-            if(dataGridView3.SelectedRows.Count > 0)
+            if (dataGridView3.SelectedRows.Count > 0)
             {
                 textBox12.Text = dataGridView3.SelectedRows[0].Cells[0].Value.ToString();
                 textBox11.Text = dataGridView3.SelectedRows[0].Cells[1].Value.ToString();
@@ -386,7 +468,7 @@ namespace APD_Project
                 //qr code gen
                 QrCodeEncodingOptions options = new QrCodeEncodingOptions();
                 BarcodeWriter writer = new BarcodeWriter();
-                options.CharacterSet ="UTF-8";
+                options.CharacterSet = "UTF-8";
                 options.Width = pictureBox2.Width;
                 options.Height = pictureBox2.Height;
                 writer.Options = options;
@@ -398,7 +480,7 @@ namespace APD_Project
 
         private void dataGridView2_SelectionChanged(object sender, EventArgs e)
         {
-            if(dataGridView2.SelectedRows.Count > 0)
+            if (dataGridView2.SelectedRows.Count > 0)
             {
                 textBox10.Text = dataGridView2.SelectedRows[0].Cells[0].Value.ToString();
                 textBox9.Text = dataGridView2.SelectedRows[0].Cells[1].Value.ToString();
@@ -410,7 +492,6 @@ namespace APD_Project
         {
             AddProductToCart();
         }
-
         private void AddProductToCart()
         {
             if (dataGridView3.SelectedRows.Count > 0)
@@ -441,9 +522,15 @@ namespace APD_Project
                     listView1.Items.Add(item);
                 }
 
+
                 Sumcalculate();
                 listView1.SelectedItems.Clear();
             }
+        }
+
+        private void DiscountCal()
+        {
+
         }
 
 
@@ -582,8 +669,18 @@ namespace APD_Project
                 MessageBox.Show("โปรกรอกข้อมูลให้ครบ");
                 return; 
             }
+            
+
             string name = textBox25.Text;
             string phone = textBox22.Text;
+
+            var nameCheck = _context.P_Member.SingleOrDefault(m => m.mem_name == name || m.mem_phone == phone);
+            if(nameCheck != null)
+            {
+                MessageBox.Show("ชื่อหรือเบอร์โทรนี้มีอยู่ในระบบแล้ว");
+                return;
+            }
+
             P_Member member = new P_Member
             {
                 mem_name = name,
@@ -789,13 +886,22 @@ namespace APD_Project
             }
             DateTime date = DateTime.Now;
             string toID = date.ToString("ddHHmmss");
+            int memberID;
+            try
+            {
+                memberID = int.Parse(comboBox9.SelectedValue.ToString());
+            }
+            catch(Exception)
+            {
+                memberID = -1;
+            }
 
             P_Bill bill = new P_Bill
             {
                 bill_id = toID,
-                member_id = null,
+                member_id = memberID,
                 sum_price = float.Parse(label23.Text),
-                date = date
+                date = date,
             };
             _context.P_Bill.Add(bill);
 
@@ -818,6 +924,7 @@ namespace APD_Project
             button13_Click(sender, e);
     
             pProductBindingSource.DataSource = _context.P_Product.ToList();
+            GetBill();
         }
 
         private void button25_Click_1(object sender, EventArgs e)
@@ -984,6 +1091,44 @@ namespace APD_Project
                 MessageBox.Show("โปรดกรอกข้อมูลให้ครบ");
                 return;
             }
+
+            string product1 = textBox19.Text;
+            string product2 = textBox28.Text;
+            double discount = double.Parse(textBox30.Text);
+
+            var CheckPromotion = _context.P_Promotion.SingleOrDefault(s => s.product_id_1 == product1 && s.product_id_2 == product2);
+            if(CheckPromotion != null)
+            {
+                MessageBox.Show("มีโปรโมชั่นของสินค้านี้อยู่แล้ว");
+                return ;
+            }
+
+            P_Promotion promotion = new P_Promotion {
+                product_id_1 = product1,
+                product_id_2 = product2,
+                discount = discount
+            };
+
+            _context.P_Promotion.Add(promotion);
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (DbUpdateException)
+            {
+                MessageBox.Show("ไม่มีสินค้าที่คุณกรอกอยู่ในระบบ");
+                return;
+            }
+
+            GetPromotion();
+            MessageBox.Show("เพิ่มโปรโมชั่นเสร็จสื้น");
+
+            textBox19.Text = "";
+            textBox28.Text = "";
+            textBox30.Text = "";
+
+
+
         }
 
         private void button28_Click(object sender, EventArgs e)
@@ -996,6 +1141,386 @@ namespace APD_Project
                 MessageBox.Show("โปรดกรอกข้อมูลให้ครบ");
                 return;
             }
+
+            int proID = int.Parse(dataGridView4.SelectedRows[0].Cells[0].Value.ToString());
+            string product1 = textBox33.Text;
+            string product2 = textBox32.Text;
+            double discount = double.Parse(textBox31.Text);
+
+            var CheckPromotion = _context.P_Promotion.SingleOrDefault(s => s.product_id_1 == product1 && s.product_id_2 == product2);
+            if (CheckPromotion != null)
+            {
+                string cuurentProID = dataGridView4.SelectedRows[0].Cells[0].Value.ToString();
+                if(cuurentProID != CheckPromotion.pro_id.ToString())
+                {
+                    MessageBox.Show("มีโปรโมชั่นของสินค้านี้อยู่แล้ว");
+                    return;
+                }  
+            }
+
+            var Promotion = _context.P_Promotion.SingleOrDefault(p => p.pro_id == proID);
+            Promotion.product_id_1 = product1;
+            Promotion.product_id_2 = product2;
+            Promotion.discount = discount;
+
+            try
+            {
+                _context.SaveChanges();
+                MessageBox.Show("แก้ไขโปรโมชั่นเรียบร้อย");
+                GetPromotion();
+            }
+            catch (DbUpdateException)
+            {
+                MessageBox.Show("ไม่พบสินค้าที่คุณกรอกในระบบ");
+                return ;
+            }
         }
+
+        private void dataGridView5_SelectionChanged(object sender, EventArgs e)
+        {
+            
+            if( dataGridView5.SelectedRows.Count > 0)
+            {
+                string billID = dataGridView5.SelectedRows[0].Cells[0].Value.ToString();
+                string name = dataGridView5.SelectedRows[0].Cells[2].Value.ToString();
+                textBox36.Text = name;
+                pBillitemsBindingSource.DataSource = _context.P_Bill_items.Where(s => s.bill_id == billID).Select(s => new {p_name = s.P_Product.p_name , s.item_id, s.bill_id, s.product_id, s.amount, s.sum_price}).ToList();
+            }
+        }
+
+        private void button29_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("ต้องการลบโปรโมชั่นนี้หรือไม่ ?", "ต้องการลบโปรโมชั่นนี้หรือไม่", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                int proID = int.Parse(dataGridView4.SelectedRows[0].Cells[0].Value.ToString());
+                var promotion = _context.P_Promotion.SingleOrDefault(p => p.pro_id == proID);
+                _context.P_Promotion.Remove(promotion);
+                _context.SaveChanges();
+                GetPromotion();
+                MessageBox.Show("ลบโปรโมชั่นเรียบร้อย");
+            }
+        }
+
+        private void button30_Click(object sender, EventArgs e)
+        {
+            int selected = dataGridView4.CurrentRow.Index;
+            dataGridView4.ClearSelection();
+            dataGridView4.Rows[selected].Selected = true;
+        }
+
+        private void textBox33_TextChanged(object sender, EventArgs e)
+        {
+            textBox34.Text = "กด Enter เพื่อค้นหาสินค้า";
+            textBox37.Text = "-";
+            pictureBox4.Image = null;
+        }
+
+
+        private void textBox33_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter)
+            {
+                string productID = textBox33.Text;
+                var product = _context.P_Product.SingleOrDefault(p => p.p_id == productID);
+                if (product != null)
+                {
+                    textBox34.Text = product.p_name;
+                    textBox37.Text = product.p_price.ToString();
+                    pictureBox4.Image = ImageLoad.LoadImage(product.p_image);
+                }
+                else
+                {
+                    textBox34.Text = "ไม่พบสินค้า";
+                    textBox37.Text = "-";
+                    pictureBox4.Image = null;
+                }
+            }
+        }
+
+        private void textBox32_TextChanged(object sender, EventArgs e)
+        {
+            textBox35.Text = "กด Enter เพื่อค้นหาสินค้า";
+            textBox38.Text = "-";
+            pictureBox5.Image = null;
+        }
+
+        private void textBox32_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                string productID = textBox32.Text;
+                var product = _context.P_Product.SingleOrDefault(p => p.p_id == productID);
+                if (product != null)
+                {
+                    textBox35.Text = product.p_name;
+                    textBox38.Text = product.p_price.ToString();
+                    pictureBox5.Image = ImageLoad.LoadImage(product.p_image);
+                }
+                else
+                {
+                    textBox35.Text = "ไม่พบสินค้า";
+                    textBox38.Text = "-";
+                    pictureBox5.Image = null;
+                }
+            }
+        }
+
+        private void button31_Click(object sender, EventArgs e)
+        {
+            var data = _context.P_Product.Where(p => p.p_type == comboBox2.Text);
+            if(comboBox2.Text == "ทั้งหมด")
+            {
+                data = _context.P_Product;
+            }
+
+            ReportForm reportForm = new ReportForm();
+            reportForm.productReportViewer1.Database.Tables["APD_Project_P_Product"].SetDataSource(data);
+            reportForm.crystalReportViewer1.ReportSource = reportForm.productReportViewer1;
+            reportForm.crystalReportViewer1.Show();
+
+            reportForm.Show();
+        }
+
+        private void label36_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label38_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox1.Checked)
+            {
+                comboBox9.Enabled = false;
+                comboBox8.Enabled = false;
+                comboBox10.Enabled = false;
+                comboBox8.ResetText();
+                comboBox9.ResetText();
+                comboBox10.ResetText();
+            }
+            else
+            {
+                comboBox9.Enabled = true;
+                comboBox8.Enabled = true;
+                comboBox10.Enabled = true;
+            }
+        }
+
+        private void comboBox9_SelectedValueChanged(object sender, EventArgs e)
+        {
+           
+        }
+
+        private void comboBox9_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter)
+            {
+                CheckInputMember();
+            }
+        }
+
+        private void CheckInputMember()
+        {
+            if(
+                comboBox9.SelectedIndex == -1 ||
+                comboBox8.SelectedIndex == -1 ||
+                comboBox10.SelectedIndex == -1
+            )
+            {
+                MessageBox.Show("ไม่พบข้อมูลลูกค้า !");
+            }
+        }
+
+        private void comboBox8_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                CheckInputMember();
+            }
+        }
+
+        private void comboBox10_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                CheckInputMember();
+            }
+        }
+
+        private void button32_Click(object sender, EventArgs e)
+        {
+            if (checkBox2.Checked)
+            {
+                if(textBox36.Text == "")
+                {
+                    pBillBindingSource.DataSource = _context.P_Bill
+                .Where(b => b.date >= dateTimePicker1.Value && b.date <= dateTimePicker2.Value)
+                .Select(b => new {
+                    b.member_id,
+                    b.bill_id,
+                    b.date,
+                    b.sum_price,
+                    memName = b.P_Member.mem_name,
+                    memPhone = b.P_Member.mem_phone
+                })
+                .OrderByDescending(b => b.date).ToList();
+                }
+                else
+                {
+                    pBillBindingSource.DataSource = _context.P_Bill
+                    .Where(b => b.date >= dateTimePicker1.Value && b.date <= dateTimePicker2.Value &&
+                    b.P_Member.mem_name.Contains(textBox36.Text) || b.P_Member.mem_phone.Contains(textBox36.Text))
+                    .Select(b => new {
+                        b.member_id,
+                        b.bill_id,
+                        b.date,
+                        b.sum_price,
+                        memName = b.P_Member.mem_name,
+                        memPhone = b.P_Member.mem_phone
+                    })
+                    .OrderByDescending(b => b.date).ToList();
+                }
+            }
+            else
+            {
+                if(textBox36.Text == "")
+                {
+                    pBillBindingSource.DataSource = _context.P_Bill
+                .Select(b => new {
+                    b.member_id,
+                    b.bill_id,
+                    b.date,
+                    b.sum_price,
+                    memName = b.P_Member.mem_name,
+                    memPhone = b.P_Member.mem_phone
+                })
+                .OrderByDescending(b => b.date).ToList();
+                }
+                else
+                {
+                    pBillBindingSource.DataSource = _context.P_Bill
+                .Where(b => b.P_Member.mem_name.Contains(textBox36.Text) || b.P_Member.mem_phone.Contains(textBox36.Text))
+                .Select(b => new {
+                    b.member_id,
+                    b.bill_id,
+                    b.date,
+                    b.sum_price,
+                    memName = b.P_Member.mem_name,
+                    memPhone = b.P_Member.mem_phone
+                })
+                .OrderByDescending(b => b.date).ToList();
+                }
+            }
+        }
+
+        private void button35_Click(object sender, EventArgs e)
+        {
+            GetBill();
+            checkBox2.Checked = false;
+        }
+
+        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        {
+            //MessageBox.Show(dateTimePicker1.Value.ToString());
+        }
+
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox2.Checked)
+            {
+                dateTimePicker1.Enabled = true;
+                dateTimePicker2.Enabled = true;
+            }
+            else
+            {
+                dateTimePicker1.Enabled = false;
+                dateTimePicker2.Enabled = false;
+            }
+        }
+
+        private void button33_Click(object sender, EventArgs e)
+        {
+            var data = _context.P_Bill;
+            DateTime mindate = data.Select(d => d.date).Min();
+            DateTime maxdate = data.Select(d => d.date).Max();
+            ReportForm reportForm = new ReportForm();
+            reportForm.incomeReport1.Database.Tables["APD_Project_P_Bill"].SetDataSource(data);
+
+            if (checkBox2.Checked)
+            {
+                reportForm.incomeReport1.SetParameterValue("start_date", dateTimePicker1.Value);
+                reportForm.incomeReport1.SetParameterValue("end_date", dateTimePicker2.Value);
+            }
+            else
+            {
+                reportForm.incomeReport1.SetParameterValue("start_date", mindate);
+                reportForm.incomeReport1.SetParameterValue("end_date", maxdate);
+            }
+            reportForm.crystalReportViewer1.ReportSource = reportForm.incomeReport1;
+            reportForm.crystalReportViewer1.Show();
+
+            reportForm.Show();
+        }
+
+        private void button34_Click(object sender, EventArgs e)
+        {
+            ReportForm reportForm = new ReportForm();
+            System.Linq.IQueryable<APD_Project.P_Bill> data;
+            string member_id = "ทั้งหมด";
+            if(textBox36.Text != "")
+            {
+               data = _context.P_Bill.Where(b => b.P_Member.mem_name == textBox36.Text || b.P_Member.mem_phone == textBox36.Text);
+               member_id = data.Max(b => b.P_Member.mem_id).ToString();
+            }
+            else
+            {
+                data = _context.P_Bill;
+            }
+            
+            reportForm.memberBillReport1.Database.Tables["APD_Project_P_Bill"].SetDataSource(data);
+            reportForm.memberBillReport1.SetParameterValue("Member_ID", member_id);
+            reportForm.crystalReportViewer1.ReportSource = reportForm.memberBillReport1;
+            reportForm.crystalReportViewer1.Show();
+
+            reportForm.Show();
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            string search = textBox13.Text;
+
+            var data = _context.P_Promotion
+                .Where( p => 
+                p.product_id_1 == search || p.product_id_2 == search || p.P_Product.p_name .Contains(search) || p.P_Product1.p_name.Contains(search)
+                ).Select(s => new {
+                    s.pro_id,
+                    s.discount,
+                    s.product_id_1,
+                    s.product_id_2,
+                    p1 = s.P_Product.p_name,
+                    p2 = s.P_Product1.p_name,
+                    p1price = s.P_Product.p_price,
+                    p2price = s.P_Product1.p_price,
+                    img1 = s.P_Product.p_image,
+                    img2 = s.P_Product1.p_image
+                }).ToList();
+
+            dataGridView4.DataSource = data;
+        }
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+    }
+
+    public class Promotion
+    {
+        public string product_id_1;
+        public string product_id_2;
     }
 }

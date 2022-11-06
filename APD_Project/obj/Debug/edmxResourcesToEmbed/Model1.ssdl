@@ -5,19 +5,19 @@
       <PropertyRef Name="bill_id" />
     </Key>
     <Property Name="bill_id" Type="varchar" MaxLength="8" Nullable="false" />
-    <Property Name="member_id" Type="int" />
-    <Property Name="sum_price" Type="float" />
-    <Property Name="date" Type="datetime" />
+    <Property Name="member_id" Type="int" Nullable="false" />
+    <Property Name="sum_price" Type="float" Nullable="false" />
+    <Property Name="date" Type="datetime" Nullable="false" />
   </EntityType>
   <EntityType Name="P_Bill_items">
     <Key>
       <PropertyRef Name="item_id" />
     </Key>
     <Property Name="item_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="bill_id" Type="varchar" MaxLength="8" />
-    <Property Name="product_id" Type="varchar" MaxLength="255" />
-    <Property Name="amount" Type="int" />
-    <Property Name="sum_price" Type="float" />
+    <Property Name="bill_id" Type="varchar" MaxLength="8" Nullable="false" />
+    <Property Name="product_id" Type="varchar" MaxLength="255" Nullable="false" />
+    <Property Name="amount" Type="int" Nullable="false" />
+    <Property Name="sum_price" Type="float" Nullable="false" />
   </EntityType>
   <EntityType Name="P_Department">
     <Key>
@@ -50,12 +50,12 @@
       <PropertyRef Name="p_id" />
     </Key>
     <Property Name="p_id" Type="varchar" MaxLength="255" Nullable="false" />
-    <Property Name="p_name" Type="text" />
-    <Property Name="p_detail" Type="text" />
-    <Property Name="p_image" Type="text" />
-    <Property Name="p_price" Type="float" />
-    <Property Name="p_amount" Type="int" />
-    <Property Name="p_type" Type="varchar" MaxLength="50" />
+    <Property Name="p_name" Type="text" Nullable="false" />
+    <Property Name="p_detail" Type="text" Nullable="false" />
+    <Property Name="p_image" Type="text" Nullable="false" />
+    <Property Name="p_price" Type="float" Nullable="false" />
+    <Property Name="p_amount" Type="int" Nullable="false" />
+    <Property Name="p_type" Type="varchar" MaxLength="50" Nullable="false" />
   </EntityType>
   <EntityType Name="P_Promotion">
     <Key>
@@ -67,7 +67,9 @@
     <Property Name="product_id_2" Type="varchar" MaxLength="255" />
   </EntityType>
   <Association Name="FK_P_Bill_items_P_Bill">
-    <End Role="P_Bill" Type="Self.P_Bill" Multiplicity="0..1" />
+    <End Role="P_Bill" Type="Self.P_Bill" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
     <End Role="P_Bill_items" Type="Self.P_Bill_items" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="P_Bill">
@@ -79,7 +81,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="FK_P_Bill_items_P_Product">
-    <End Role="P_Product" Type="Self.P_Product" Multiplicity="0..1" />
+    <End Role="P_Product" Type="Self.P_Product" Multiplicity="1" />
     <End Role="P_Bill_items" Type="Self.P_Bill_items" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="P_Product">
@@ -87,18 +89,6 @@
       </Principal>
       <Dependent Role="P_Bill_items">
         <PropertyRef Name="product_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_P_Bill_P_Member">
-    <End Role="P_Member" Type="Self.P_Member" Multiplicity="0..1" />
-    <End Role="P_Bill" Type="Self.P_Bill" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="P_Member">
-        <PropertyRef Name="mem_id" />
-      </Principal>
-      <Dependent Role="P_Bill">
-        <PropertyRef Name="member_id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -153,10 +143,6 @@
     <AssociationSet Name="FK_P_Bill_items_P_Product" Association="Self.FK_P_Bill_items_P_Product">
       <End Role="P_Product" EntitySet="P_Product" />
       <End Role="P_Bill_items" EntitySet="P_Bill_items" />
-    </AssociationSet>
-    <AssociationSet Name="FK_P_Bill_P_Member" Association="Self.FK_P_Bill_P_Member">
-      <End Role="P_Member" EntitySet="P_Member" />
-      <End Role="P_Bill" EntitySet="P_Bill" />
     </AssociationSet>
     <AssociationSet Name="FK_P_Employee_P_Department" Association="Self.FK_P_Employee_P_Department">
       <End Role="P_Department" EntitySet="P_Department" />

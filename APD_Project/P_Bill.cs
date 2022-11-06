@@ -21,9 +21,9 @@ namespace APD_Project
         }
     
         public string bill_id { get; set; }
-        public Nullable<int> member_id { get; set; }
-        public Nullable<double> sum_price { get; set; }
-        public Nullable<System.DateTime> date { get; set; }
+        public int member_id { get; set; }
+        public double sum_price { get; set; }
+        public System.DateTime date { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<P_Bill_items> P_Bill_items { get; set; }

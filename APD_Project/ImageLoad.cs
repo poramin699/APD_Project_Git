@@ -15,11 +15,20 @@ namespace APD_Project
         {
             HttpWebRequest httpWeb = (HttpWebRequest)WebRequest.Create(url);
             httpWeb.UserAgent = "Chrome/105.0.0.0";
-            HttpWebResponse webResponse = (HttpWebResponse)httpWeb.GetResponse();
-            Stream stream = webResponse.GetResponseStream();
-            Bitmap bitmap = new Bitmap(stream);
-            stream.Dispose();
-            return bitmap;
+            try
+            {
+                HttpWebResponse webResponse = (HttpWebResponse)httpWeb.GetResponse();
+                Stream stream = webResponse.GetResponseStream();
+                Bitmap bitmap = new Bitmap(stream);
+                stream.Dispose();
+                return bitmap;
+            }
+            catch (WebException)
+            {
+                return null;
+            }
+            
+            
         }
     }
 }

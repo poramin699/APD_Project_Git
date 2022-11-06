@@ -5,9 +5,9 @@
       <PropertyRef Name="bill_id" />
     </Key>
     <Property Name="bill_id" Type="String" MaxLength="8" FixedLength="false" Unicode="false" Nullable="false" />
-    <Property Name="member_id" Type="Int32" />
-    <Property Name="sum_price" Type="Double" />
-    <Property Name="date" Type="DateTime" Precision="3" />
+    <Property Name="member_id" Type="Int32" Nullable="false" />
+    <Property Name="sum_price" Type="Double" Nullable="false" />
+    <Property Name="date" Type="DateTime" Precision="3" Nullable="false" />
     <NavigationProperty Name="P_Bill_items" Relationship="Self.FK_P_Bill_items_P_Bill" FromRole="P_Bill" ToRole="P_Bill_items" />
     <NavigationProperty Name="P_Member" Relationship="Self.FK_P_Bill_P_Member" FromRole="P_Bill" ToRole="P_Member" />
   </EntityType>
@@ -16,10 +16,10 @@
       <PropertyRef Name="item_id" />
     </Key>
     <Property Name="item_id" Type="Int32" Nullable="false" />
-    <Property Name="bill_id" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-    <Property Name="product_id" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-    <Property Name="amount" Type="Int32" />
-    <Property Name="sum_price" Type="Double" />
+    <Property Name="bill_id" Type="String" MaxLength="8" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="product_id" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="amount" Type="Int32" Nullable="false" />
+    <Property Name="sum_price" Type="Double" Nullable="false" />
     <NavigationProperty Name="P_Bill" Relationship="Self.FK_P_Bill_items_P_Bill" FromRole="P_Bill_items" ToRole="P_Bill" />
     <NavigationProperty Name="P_Product" Relationship="Self.FK_P_Bill_items_P_Product" FromRole="P_Bill_items" ToRole="P_Product" />
   </EntityType>
@@ -57,12 +57,12 @@
       <PropertyRef Name="p_id" />
     </Key>
     <Property Name="p_id" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-    <Property Name="p_name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-    <Property Name="p_detail" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-    <Property Name="p_image" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-    <Property Name="p_price" Type="Double" />
-    <Property Name="p_amount" Type="Int32" />
-    <Property Name="p_type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="p_name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="p_detail" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="p_image" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="p_price" Type="Double" Nullable="false" />
+    <Property Name="p_amount" Type="Int32" Nullable="false" />
+    <Property Name="p_type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
     <NavigationProperty Name="P_Bill_items" Relationship="Self.FK_P_Bill_items_P_Product" FromRole="P_Product" ToRole="P_Bill_items" />
     <NavigationProperty Name="P_Promotion" Relationship="Self.FK_P_Promotion_P_Product" FromRole="P_Product" ToRole="P_Promotion" />
     <NavigationProperty Name="P_Promotion1" Relationship="Self.FK_P_Promotion_P_Product1" FromRole="P_Product" ToRole="P_Promotion" />
@@ -79,7 +79,7 @@
     <NavigationProperty Name="P_Product1" Relationship="Self.FK_P_Promotion_P_Product1" FromRole="P_Promotion" ToRole="P_Product" />
   </EntityType>
   <Association Name="FK_P_Bill_items_P_Bill">
-    <End Role="P_Bill" Type="Self.P_Bill" Multiplicity="0..1" />
+    <End Role="P_Bill" Type="Self.P_Bill" Multiplicity="1" />
     <End Role="P_Bill_items" Type="Self.P_Bill_items" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="P_Bill">
@@ -91,7 +91,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="FK_P_Bill_P_Member">
-    <End Role="P_Member" Type="Self.P_Member" Multiplicity="0..1" />
+    <End Role="P_Member" Type="Self.P_Member" Multiplicity="1" />
     <End Role="P_Bill" Type="Self.P_Bill" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="P_Member">
@@ -103,7 +103,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="FK_P_Bill_items_P_Product">
-    <End Role="P_Product" Type="Self.P_Product" Multiplicity="0..1" />
+    <End Role="P_Product" Type="Self.P_Product" Multiplicity="1" />
     <End Role="P_Bill_items" Type="Self.P_Bill_items" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="P_Product">
