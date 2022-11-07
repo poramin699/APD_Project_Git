@@ -492,6 +492,8 @@ namespace APD_Project
         {
             AddProductToCart();
         }
+
+        string [,] PromotionList = { };
         private void AddProductToCart()
         {
             if (dataGridView3.SelectedRows.Count > 0)
@@ -1182,8 +1184,6 @@ namespace APD_Project
             if( dataGridView5.SelectedRows.Count > 0)
             {
                 string billID = dataGridView5.SelectedRows[0].Cells[0].Value.ToString();
-                string name = dataGridView5.SelectedRows[0].Cells[2].Value.ToString();
-                textBox36.Text = name;
                 pBillitemsBindingSource.DataSource = _context.P_Bill_items.Where(s => s.bill_id == billID).Select(s => new {p_name = s.P_Product.p_name , s.item_id, s.bill_id, s.product_id, s.amount, s.sum_price}).ToList();
             }
         }
@@ -1444,6 +1444,9 @@ namespace APD_Project
 
         private void button33_Click(object sender, EventArgs e)
         {
+            textBox36.Text = "";
+            button32_Click(sender, e);
+
             var data = _context.P_Bill;
             DateTime mindate = data.Select(d => d.date).Min();
             DateTime maxdate = data.Select(d => d.date).Max();
@@ -1468,22 +1471,26 @@ namespace APD_Project
 
         private void button34_Click(object sender, EventArgs e)
         {
+            checkBox2.Checked = false;
+            button32_Click(sender, e);
             ReportForm reportForm = new ReportForm();
-            System.Linq.IQueryable<APD_Project.P_Bill> data;
+            System.Linq.IQueryable<APD_Project.P_Bill_items> data;
             string member_id = "ทั้งหมด";
+
             if(textBox36.Text != "")
             {
-               data = _context.P_Bill.Where(b => b.P_Member.mem_name == textBox36.Text || b.P_Member.mem_phone == textBox36.Text);
-               member_id = data.Max(b => b.P_Member.mem_id).ToString();
+               var member = _context.P_Bill.Where(b => b.P_Member.mem_name == textBox36.Text || b.P_Member.mem_phone == textBox36.Text).First();
+                data = _context.P_Bill_items.Where(b => b.P_Bill.member_id == member.member_id);
+               member_id = data.Max(b => b.P_Bill.member_id).ToString();
             }
             else
             {
-                data = _context.P_Bill;
+                data = _context.P_Bill_items;
             }
             
-            reportForm.memberBillReport1.Database.Tables["APD_Project_P_Bill"].SetDataSource(data);
-            reportForm.memberBillReport1.SetParameterValue("Member_ID", member_id);
-            reportForm.crystalReportViewer1.ReportSource = reportForm.memberBillReport1;
+            reportForm.memberBillItemReport1.Database.Tables["APD_Project_P_Bill_items"].SetDataSource(data);
+            reportForm.memberBillItemReport1.SetParameterValue("Member_ID", member_id);
+            reportForm.crystalReportViewer1.ReportSource = reportForm.memberBillItemReport1;
             reportForm.crystalReportViewer1.Show();
 
             reportForm.Show();
@@ -1515,6 +1522,11 @@ namespace APD_Project
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void button36_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 

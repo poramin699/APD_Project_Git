@@ -32,8 +32,9 @@ namespace APD_Project
         {
             this.crystalReportViewer1 = new CrystalDecisions.Windows.Forms.CrystalReportViewer();
             this.productReportViewer1 = new APD_Project.Report.ProductReport();
-            this.incomeReport1 = new APD_Project.Report.IncomeReport();
             this.memberBillReport1 = new APD_Project.Report.MemberBillReport();
+            this.incomeReport1 = new APD_Project.Report.IncomeReport();
+            this.memberBillItemReport1 = new APD_Project.Report.MemberBillItemReport();
             this.SuspendLayout();
             // 
             // crystalReportViewer1
@@ -66,5 +67,6 @@ namespace APD_Project
         public CrystalDecisions.Windows.Forms.CrystalReportViewer crystalReportViewer1;
         public IncomeReport incomeReport1;
         public MemberBillReport memberBillReport1;
+        public MemberBillItemReport memberBillItemReport1;
     }
 }

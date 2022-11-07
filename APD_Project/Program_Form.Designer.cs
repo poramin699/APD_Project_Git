@@ -272,6 +272,8 @@
             this.label23 = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
             this.Order_Page = new System.Windows.Forms.TabPage();
+            this.button33 = new System.Windows.Forms.Button();
+            this.button34 = new System.Windows.Forms.Button();
             this.dataGridView5 = new System.Windows.Forms.DataGridView();
             this.billidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -283,8 +285,6 @@
             this.panel9 = new System.Windows.Forms.Panel();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.button35 = new System.Windows.Forms.Button();
-            this.button34 = new System.Windows.Forms.Button();
-            this.button33 = new System.Windows.Forms.Button();
             this.button32 = new System.Windows.Forms.Button();
             this.label52 = new System.Windows.Forms.Label();
             this.label50 = new System.Windows.Forms.Label();
@@ -377,8 +377,7 @@
             this.pBillDataGridViewTextBoxColumn,
             this.pProductDataGridViewTextBoxColumn});
             dataGridView6.DataSource = this.pBillitemsBindingSource;
-            dataGridView6.Dock = System.Windows.Forms.DockStyle.Right;
-            dataGridView6.Location = new System.Drawing.Point(541, 39);
+            dataGridView6.Location = new System.Drawing.Point(541, 73);
             dataGridView6.MultiSelect = false;
             dataGridView6.Name = "dataGridView6";
             dataGridView6.ReadOnly = true;
@@ -388,7 +387,7 @@
             dataGridView6.RowsDefaultCellStyle = dataGridViewCellStyle1;
             dataGridView6.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             dataGridView6.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dataGridView6.Size = new System.Drawing.Size(584, 574);
+            dataGridView6.Size = new System.Drawing.Size(584, 540);
             dataGridView6.TabIndex = 9;
             // 
             // item_id
@@ -2900,6 +2899,8 @@
             // Order_Page
             // 
             this.Order_Page.Controls.Add(dataGridView6);
+            this.Order_Page.Controls.Add(this.button33);
+            this.Order_Page.Controls.Add(this.button34);
             this.Order_Page.Controls.Add(this.dataGridView5);
             this.Order_Page.Controls.Add(this.panel9);
             this.Order_Page.Location = new System.Drawing.Point(4, 27);
@@ -2909,6 +2910,34 @@
             this.Order_Page.TabIndex = 5;
             this.Order_Page.Text = "คำสั่งซื้อ";
             this.Order_Page.UseVisualStyleBackColor = true;
+            // 
+            // button33
+            // 
+            this.button33.BackColor = System.Drawing.Color.RoyalBlue;
+            this.button33.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button33.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button33.ForeColor = System.Drawing.Color.White;
+            this.button33.Location = new System.Drawing.Point(738, 41);
+            this.button33.Name = "button33";
+            this.button33.Size = new System.Drawing.Size(166, 28);
+            this.button33.TabIndex = 9;
+            this.button33.Text = "รายงานรายรับ";
+            this.button33.UseVisualStyleBackColor = false;
+            this.button33.Click += new System.EventHandler(this.button33_Click);
+            // 
+            // button34
+            // 
+            this.button34.BackColor = System.Drawing.Color.RoyalBlue;
+            this.button34.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button34.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button34.ForeColor = System.Drawing.Color.White;
+            this.button34.Location = new System.Drawing.Point(910, 41);
+            this.button34.Name = "button34";
+            this.button34.Size = new System.Drawing.Size(215, 28);
+            this.button34.TabIndex = 10;
+            this.button34.Text = "รายงานการซื้อ";
+            this.button34.UseVisualStyleBackColor = false;
+            this.button34.Click += new System.EventHandler(this.button34_Click);
             // 
             // dataGridView5
             // 
@@ -2995,8 +3024,6 @@
             // 
             this.panel9.Controls.Add(this.checkBox2);
             this.panel9.Controls.Add(this.button35);
-            this.panel9.Controls.Add(this.button34);
-            this.panel9.Controls.Add(this.button33);
             this.panel9.Controls.Add(this.button32);
             this.panel9.Controls.Add(this.label52);
             this.panel9.Controls.Add(this.label50);
@@ -3029,34 +3056,6 @@
             this.button35.Text = "แสดงทั้งหมด";
             this.button35.UseVisualStyleBackColor = true;
             this.button35.Click += new System.EventHandler(this.button35_Click);
-            // 
-            // button34
-            // 
-            this.button34.BackColor = System.Drawing.Color.RoyalBlue;
-            this.button34.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button34.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button34.ForeColor = System.Drawing.Color.White;
-            this.button34.Location = new System.Drawing.Point(1008, 4);
-            this.button34.Name = "button34";
-            this.button34.Size = new System.Drawing.Size(113, 28);
-            this.button34.TabIndex = 10;
-            this.button34.Text = "รายงานการซื้อของลูกค้่า";
-            this.button34.UseVisualStyleBackColor = false;
-            this.button34.Click += new System.EventHandler(this.button34_Click);
-            // 
-            // button33
-            // 
-            this.button33.BackColor = System.Drawing.Color.RoyalBlue;
-            this.button33.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button33.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button33.ForeColor = System.Drawing.Color.White;
-            this.button33.Location = new System.Drawing.Point(893, 4);
-            this.button33.Name = "button33";
-            this.button33.Size = new System.Drawing.Size(113, 28);
-            this.button33.TabIndex = 9;
-            this.button33.Text = "รายงานรายรับ";
-            this.button33.UseVisualStyleBackColor = false;
-            this.button33.Click += new System.EventHandler(this.button33_Click);
             // 
             // button32
             // 
